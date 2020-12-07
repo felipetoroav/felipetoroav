@@ -15,18 +15,29 @@
     <div class="game-config--container">
       <h1>Memory Game</h1>
       <p>Enter game size</p>
-      <div class="game-size"></div>
+      <div class="btn-game">        
+        <button id="btn-4x4">4 x 4</button>
+        <button id="btn-5x5">5 x 5</button>
+        <button id="btn-6x6">6 x 6</button>          
+      </div>
     </div>
   </section>
 
   <!-- Header and score -->
-  <header class="header">
-
+  <header class="header--container">     
+    <h2>Memory Game</h2>
+    <div class="puntajes">
+      <div>Aciertos seguidos: <span id="aciertos_seguidos">#</span></div>
+      <div>Errores: <span id="errores">#</span></div>
+      <div>Puntaje: <span id="puntaje">#</span></div>  
+    </div>  
   </header>
 
   <!-- Game container  -->
-  <main>
-
+  <main id="game" class="game-container">
+    
   </main>
+
+  <script src="./script.js"></script>
 </body>
 </html>
