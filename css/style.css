@@ -13,7 +13,7 @@ html {
   position: absolute;
   width: 100vw;
   height: 100vh;
-  visibility: hidden;
+  /* visibility: hidden; */
 }
 
 .game-config--container {
@@ -86,9 +86,24 @@ html {
   height: fit-content;
 }
 
-.carta {
+.carta_container {
+  position: relative;
   width: 80px;
   height: 120px;
   border-radius: 5px;
-  background-color: black;
+  background: radial-gradient(
+    circle,
+    rgba(89, 124, 24, 1) 0%,
+    rgba(150, 175, 76, 1) 0%,
+    rgba(89, 124, 24, 1) 100%
+  );
+  border: 1px solid #38441c;
+}
+
+.carta img {
+  position: absolute;
+  top: calc(50% - 30px);
+  left: calc(50% - 30px);
+  width: 60px;
+  color: black;
 }
