@@ -2,6 +2,7 @@ const GAME_ROWS = 6;
 const btn18 = document.getElementById('btn18');
 const btn24 = document.getElementById('btn24');
 const btn30 = document.getElementById('btn30');
+const menu = document.getElementsByClassName('game-config');
 const imgs = [
   "./imgs/magic.png",
   "./imgs/bat.png",
@@ -18,72 +19,81 @@ const imgs = [
   "./imgs/pig.png",
   "./imgs/snake.png",
   "./imgs/wolf.png",
-  "./imgs/bee.png"  
+  "./imgs/bee.png"
 ]
 
 function $(selector) {
   return document.querySelector(selector);
 }
-
 class Game {
   constructor (gameSize) {
+    // debugger
+    this.gameSize = gameSize
     this.imgs = imgs
     this.array_imgs = []
-    this.generate_array_imgs (gameSize)
-    this.disorganize_array_imgs ()
-    this.createGame (gameSize)
-    console.log (this.imgs)
-    console.log (this.array_imgs)
+    this.createGame ()
+    setTimeout (() => this.addClickEvents(), 1000)
   }
 
-  createGame (gameSize) {
-    
-    // debugger
-    for (let i = 0; i < (GAME_ROWS * gameSize); i++){
-      let carta_container = document.createElement('div');
-      carta_container.setAttribute ('id', 'carta_container' + i)
-      carta_container.setAttribute ('class', 'carta_container')
-      $('#game').appendChild(carta_container);
+  createGame () {
+    this.generateArrayImgs ()
+    for (let i = 0; i < (GAME_ROWS * this.gameSize); i++){
+      let card_container = document.createElement('div');
+      card_container.setAttribute ('id', 'card_container' + i)
+      card_container.setAttribute ('data-position', i)
+      card_container.setAttribute ('class', 'card_container')
+      $('#game').appendChild(card_container)
 
       for (let j = 0; j <= 1; j++) {
-        // debugger
-        let carta = document.createElement('span');
-        let icon = document.createElement('img');
-        carta.setAttribute ('class', 'carta');
+        let card = document.createElement('span')
+        let icon = document.createElement('img')
         if (j === 0) {
-          icon.src = this.imgs[0]
+          card.setAttribute ('class', 'back')
+          card.setAttribute ('style', 'background-image: url(' + this.imgs[0] + ');')
+          card.setAttribute ('data-position', i)
         } else {
-          icon.src = this.array_imgs[i]
-          console.log (this.array_imgs[i])
+          card.setAttribute ('class', 'front')
+          card.setAttribute ('data-position', i)
+          card.setAttribute ('style', 'background-image: url(' + this.array_imgs[i] + ');')
         }
-        $('#carta_container' + i).appendChild(carta);
-        carta.appendChild(icon)
+        $('#card_container' + i).appendChild(card)
       }
-    }  
+    }
   }
-  
-  generate_array_imgs (gameSize) {
-    // debugger
+
+  generateArrayImgs () {
     let random_imgs, face;
-    for (let i = 1; i <= ((gameSize * GAME_ROWS) / 2); i++) {
+    for (let i = 1; i <= ((this.gameSize * GAME_ROWS) / 2); i++) {
       random_imgs =  Math.floor(Math.random() * (imgs.length - 1) + 1)
       face = this.imgs[random_imgs]
       this.array_imgs.push(face)
       this.array_imgs.push(face)
       this.imgs.splice(random_imgs, 1)
-    } 
+      this.array_imgs.sort(() => Math.random() - 0.5)
+    }
   }
 
-  disorganize_array_imgs () {
-    this.array_imgs.sort(() => Math.random() - 0.5)
-    console.log(this.array_imgs)
+
+  addClickEvents () {
+    for (let i = 0; i < (GAME_ROWS * this.gameSize); i++) {
+      document.getElementById('card_container' + i).addEventListener('click', this.chooseCard)
+    }
   }
 
-  // assign_cards () {
-  //   for (let i = 0; i < ((gameSize * GAME_ROWS) / 2); i++) {
-  //     let carta = document.getElementById('carta0')
-  //   }
-  // }
+  removeClickEvents () {
+    for (let i = 0; i < (GAME_ROWS * this.gameSize); i++) {
+      document.getElementById('card_container' + i).removeEventListener('click', this.chooseCard)
+      console.log('hlo')
+    }
+  }
+
+  chooseCard (ev) {
+    let first_card = ev.target.dataset.position
+    console.log(first_card)
+
+
+    // document.getElementById("card_container0").lastChild
+  }
 
 
 }
