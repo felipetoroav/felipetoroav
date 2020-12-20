@@ -27,20 +27,27 @@ function $(selector) {
 }
 class Game {
   constructor (gameSize) {
-    // debugger
+    this.first_card
+    this.second_card
+    this.first_cont
+    this.second_cont
     this.gameSize = gameSize
+    this.selected_cards = 0
     this.imgs = imgs
     this.array_imgs = []
     this.createGame ()
-    setTimeout (() => this.addClickEvents(), 1000)
   }
 
   createGame () {
     this.generateArrayImgs ()
+    this.hideMenu ()
+    this.chooseCard = this.chooseCard.bind(this)
+    // console.log(this.first_card + 'createGame function')
     for (let i = 0; i < (GAME_ROWS * this.gameSize); i++){
       let card_container = document.createElement('div');
       card_container.setAttribute ('id', 'card_container' + i)
-      card_container.setAttribute ('data-position', i)
+      card_container.setAttribute ('data-position', this.array_imgs[i])
+      card_container.setAttribute ('data-container', i)
       card_container.setAttribute ('class', 'card_container')
       $('#game').appendChild(card_container)
 
@@ -50,18 +57,23 @@ class Game {
         if (j === 0) {
           card.setAttribute ('class', 'back')
           card.setAttribute ('style', 'background-image: url(' + this.imgs[0] + ');')
-          card.setAttribute ('data-position', i)
+          card.setAttribute ('data-position', this.array_imgs[i])
+          card.setAttribute ('data-container', i)
         } else {
           card.setAttribute ('class', 'front')
-          card.setAttribute ('data-position', i)
+          card.setAttribute ('class', 'hiden')
+          card.setAttribute ('data-position', this.array_imgs[i])
+          card.setAttribute ('data-container', i)
           card.setAttribute ('style', 'background-image: url(' + this.array_imgs[i] + ');')
         }
         $('#card_container' + i).appendChild(card)
       }
     }
+    this.addClickEvents ()
   }
 
   generateArrayImgs () {
+    // console.log(this.first_card + 'generateArrayImgs function')
     let random_imgs, face;
     for (let i = 1; i <= ((this.gameSize * GAME_ROWS) / 2); i++) {
       random_imgs =  Math.floor(Math.random() * (imgs.length - 1) + 1)
@@ -71,6 +83,10 @@ class Game {
       this.imgs.splice(random_imgs, 1)
       this.array_imgs.sort(() => Math.random() - 0.5)
     }
+  }
+
+  hideMenu () {
+    document.getElementById('menu').classList.add('hiden')
   }
 
 
@@ -83,16 +99,38 @@ class Game {
   removeClickEvents () {
     for (let i = 0; i < (GAME_ROWS * this.gameSize); i++) {
       document.getElementById('card_container' + i).removeEventListener('click', this.chooseCard)
-      console.log('hlo')
     }
   }
 
+  flipCard (numcontainer) {
+    document.getElementById('card_container' + numcontainer).firstChild.classList.add('hiden')
+    document.getElementById('card_container' + numcontainer).lastChild.classList.remove('hiden')
+  }
+
   chooseCard (ev) {
-    let first_card = ev.target.dataset.position
-    console.log(first_card)
+    switch (game.selected_cards) {
+      case 0:
+        // debugger
+        this.first_card = ev.target.dataset.position
+        this.first_cont = ev.target.dataset.container
+        this.flipCard (this.first_cont)
+        game.selected_cards++
+        break
+
+        case 1:
+        this.second_card = ev.target.dataset.position
+        this.second_cont = ev.target.dataset.container
+        this.flipCard (this.second_cont)
+        if (this.first_card === this.second_card) {
+          console.log('match')
+        } else {
+          console.log('intenta nuevamente')
+        }
+          game.selected_cards =0
+      break
+    }
 
 
-    // document.getElementById("card_container0").lastChild
   }
 
 
