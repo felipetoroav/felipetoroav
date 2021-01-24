@@ -3,7 +3,7 @@ const btn18 = document.getElementById('btn18');
 const btn24 = document.getElementById('btn24');
 const btn30 = document.getElementById('btn30');
 const menu = document.getElementsByClassName('game-config');
-const aciertos = document.getElementById('aciertos_seguidos');
+const aciertos = document.getElementById('aciertosSeguidos');
 const errores = document.getElementById('errores');
 const puntaje = document.getElementById('puntaje');
 const imgs = [
@@ -35,9 +35,10 @@ class Game {
     this.first_cont
     this.second_cont
     this.gameSize = gameSize
-    this.selected_cards = 0
+    this.selectedCards = 0
     this.acierto_seguido = 0
-    this.aciertos_seguidos = 0
+    this.aciertosSeguidos = 0
+    this.cardsToWin = 0
     this.errores = 0
     this.puntaje = 0
     this.imgs = imgs
@@ -94,19 +95,12 @@ class Game {
     document.getElementById('menu').classList.add('hiden')
   }
 
-
-  // addClickEvents () {
-  //   for (let i = 0; i < (GAME_ROWS * this.gameSize); i++) {
-  //     document.getElementById('card_container' + i).addEventListener('click', this.chooseCard)
-  //   }
-  // }
-
   addClickEvents (card) {
     document.getElementById('card_container' + card).addEventListener('click', this.chooseCard)
   }
 
   removeClickEvents (card) {
-      document.getElementById('card_container' + card).removeEventListener('click', this.chooseCard)
+    document.getElementById('card_container' + card).removeEventListener('click', this.chooseCard)
   }
 
   showCard (card) {
@@ -119,44 +113,56 @@ class Game {
   }
 
   chooseCard (ev) {
-    switch (game.selected_cards) {
+    switch (game.selectedCards) {
       case 0:
         this.first_card = ev.target.dataset.position
         this.first_cont = ev.target.dataset.container
         this.showCard (this.first_cont)
-        game.selected_cards++
+        this.removeClickEvents (this.first_cont)
+        game.selectedCards++
         break
 
         case 1:
         this.second_card = ev.target.dataset.position
         this.second_cont = ev.target.dataset.container
-        this.removeClickEvents (this.first_cont)
         this.showCard (this.second_cont)
         if (this.first_card === this.second_card) {
           this.removeClickEvents (this.second_cont)
           this.acierto_seguido++
           this.puntaje++
+          this.cardsToWin++
           puntaje.innerHTML = this.puntaje
           if (this.acierto_seguido == 2) {
-            this.aciertos_seguidos++
+            this.aciertosSeguidos++
             this.puntaje += 5
-            aciertos.innerHTML = this.aciertos_seguidos
+            aciertos.innerHTML = this.aciertosSeguidos
             puntaje.innerHTML = this.puntaje
             this.acierto_seguido = 1
           }
+          if (this.cardsToWin == this.array_imgs.length/2) {
+            this.winGame()
+          }
         } else {
+          setTimeout (() => {
+            this.hideCard(this.first_cont)
+            this.hideCard(this.second_cont)
+          }, 700)
           this.addClickEvents (this.first_cont)
-          setTimeout (() => {this.hideCard (this.first_cont)}, 1000)
-          setTimeout (() => {this.hideCard (this.second_cont)}, 1000)
           this.acierto_seguido = 0
           this.errores++
           errores.innerHTML = this.errores
         }
-          game.selected_cards =0
-      break
-    }
+        game.selectedCards =0
+        break
+      }
+  }
 
-
+  winGame () {
+      swal (
+        `You Win`,
+        `Tu puntaje es ${this.puntaje}`,
+        "success"
+      )
   }
 
 
